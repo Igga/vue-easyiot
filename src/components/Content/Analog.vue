@@ -18,7 +18,7 @@
                             <b-input-group>
                                 <b-input-group-append>
                                     <div class="analog-div">
-                                        <b-form-input id="range-1" v-model="value" type="range" min="0" max="255"></b-form-input>
+                                        <b-form-input v-model="value" type="range" min="0" max="255"></b-form-input>
                                         <span class="analog-range">255</span>
                                     </div>
                                     <b-button variant="outline-dark">OUTPUT</b-button>

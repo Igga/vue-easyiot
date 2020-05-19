@@ -10,28 +10,28 @@
                     label-cols-sm="2"
                     label="IP"
                     >
-                    <b-form-input id="nested-street" plaintext value="148.251.51.135"></b-form-input>
+                    <b-form-input plaintext value="148.251.51.135"></b-form-input>
                 </b-form-group>
 
                 <b-form-group
                     label-cols-sm="2"
                     label="Device ID"
                     >
-                    <b-form-input id="nested-street" plaintext value="7b6601"></b-form-input>
+                    <b-form-input plaintext value="7b6601"></b-form-input>
                 </b-form-group>
 
                 <b-form-group
                     label-cols-sm="2"
                     label="Device name"
                     >
-                    <b-form-input id="nested-street" plaintext value="Бегущая строка"></b-form-input>
+                    <b-form-input plaintext value="Бегущая строка"></b-form-input>
                 </b-form-group>
 
                 <b-form-group
                     label-cols-sm="2"
                     label="Last online"
                     >
-                    <b-form-input id="nested-street" plaintext value="Never"></b-form-input>
+                    <b-form-input plaintext value="Never"></b-form-input>
                 </b-form-group>
 
                 <b-form-group

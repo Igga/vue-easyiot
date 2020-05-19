@@ -16,7 +16,6 @@
                 invalid-feedback="Name is required"
                 >
                 <b-form-input
-                    id="name-input"
                     v-model="name"
                     :state="nameState"
                     placeholder="e.g. Farm controller"

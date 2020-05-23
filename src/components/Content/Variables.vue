@@ -16,27 +16,11 @@
                         </b-tr>
                     </b-thead>
                     <b-tbody>
-                        <b-tr>
-                            <b-td>1</b-td>
-                            <b-td>22</b-td>
-                            <b-td>43</b-td>
-                            <b-td>43</b-td>
-                            <b-td>
-                                <b-button-group>
-                                    <b-button variant="outline-success" size="sm">
-                                        Read
-                                    </b-button>
-                                    <b-button variant="outline-danger" size="sm">
-                                        Delete
-                                    </b-button>
-                                </b-button-group>
-                            </b-td>
-                        </b-tr>
-                        <b-tr>
-                            <b-td>2</b-td>
-                            <b-td>22</b-td>
-                            <b-td>43</b-td>
-                            <b-td>43</b-td>
+                        <b-tr v-for="(variable, index) in device.variables" v-bind:key="index">
+                            <b-td>{{ index + 1 }}</b-td>
+                            <b-td>{{ variable.name }}</b-td>
+                            <b-td>{{ variable.lastResponse }}</b-td>
+                            <b-td>{{ calcDate(variable.responseTime) }}</b-td>
                             <b-td>
                                 <b-button-group>
                                     <b-button variant="outline-success" size="sm">
@@ -67,8 +51,20 @@
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
 
-    @Component
-    export default class Variables extends Vue {}
+    @Component({
+        computed: {
+            device: function() {
+                return this.$store.getters.selectedDevice;
+            }
+        }
+    })
+    export default class Variables extends Vue {
+
+        calcDate(date: Date): string {
+            return new Date(date).toISOString().replace(/T/, ' ').replace(/\..+/, '')
+        }
+
+    }
 </script>
 
 <style scoped>

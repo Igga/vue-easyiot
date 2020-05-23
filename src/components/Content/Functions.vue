@@ -5,7 +5,8 @@
         </b-card-header>
         <b-collapse id="accordion-5" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
-                <b-input-group prepend="servo" class="mt-3">
+
+                <b-input-group v-for="(name, index) in device.functions" v-bind:key="index" :prepend="name" class="mt-3">
                     <b-form-input placeholder="Param"></b-form-input>
                     <b-input-group-append>
                     <b-button variant="outline-success">Send</b-button>
@@ -13,14 +14,6 @@
                     </b-input-group-append>
                 </b-input-group>
 
-                <b-input-group prepend="lcd" class="mt-3">
-                    <b-form-input placeholder="Param"></b-form-input>
-                    <b-input-group-append>
-                    <b-button variant="outline-success">Send</b-button>
-                    <b-button variant="outline-danger">Delete</b-button>
-                    </b-input-group-append>
-                </b-input-group>
-                
                 <b-input-group class="mt-3">
                     <b-form-input
                         placeholder="Enter function name"
@@ -37,8 +30,15 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
+    import { Function } from "@/store/device/types";
 
-    @Component
+    @Component({
+        computed: {
+            device: function() {
+                return this.$store.getters.selectedDevice;
+            }
+        }
+    })
     export default class Functions extends Vue {}
 </script>
 

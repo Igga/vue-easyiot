@@ -17,28 +17,29 @@
                     label-cols-sm="2"
                     label="Device ID"
                     >
-                    <b-form-input plaintext value="7b6601"></b-form-input>
+                    <b-form-input plaintext :value="device.id"></b-form-input>
                 </b-form-group>
 
                 <b-form-group
                     label-cols-sm="2"
                     label="Device name"
                     >
-                    <b-form-input plaintext value="Бегущая строка"></b-form-input>
+                    <b-form-input plaintext :value="device.name"></b-form-input>
                 </b-form-group>
 
                 <b-form-group
                     label-cols-sm="2"
                     label="Last online"
                     >
-                    <b-form-input plaintext value="Never"></b-form-input>
+                    <b-form-input plaintext :value="calcDate(device.lastOnline)"></b-form-input>
                 </b-form-group>
 
                 <b-form-group
                     label-cols-sm="2"
                     label="Status"
                     >
-                    <b-button variant="danger">OFFLINE</b-button>
+                    <b-button variant="danger" v-if="!device.connected">OFFLINE</b-button>
+                    <b-button variant="success" v-if="device.connected">ONLINE</b-button>
                 </b-form-group>
                 <b-alert variant="warning" show>
                     To configure your device connect it to Easy-IoT server
@@ -50,9 +51,20 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
+    import { Device } from '../../store/device/types';
 
-    @Component
-    export default class MainInfo extends Vue {}
+    @Component({
+        computed: {
+            device: function() {
+                return this.$store.getters.selectedDevice;
+            }
+        }
+    })
+    export default class MainInfo extends Vue {
+        calcDate(date: Date): string {
+            return new Date(date).toISOString().replace(/T/, ' ').replace(/\..+/, '')
+        }
+    }
 </script>
 
 <style scoped>

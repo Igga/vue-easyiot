@@ -6,30 +6,13 @@
         <b-collapse id="accordion-2" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
                 <b-card-group deck>
-                    <b-card no-body style="max-width: 20rem;">
-                        <b-card-body>
-                            <b-card-title>PIN 5</b-card-title>
-                            <b-card-sub-title class="mb-2">MODE INPUT</b-card-sub-title>
-                            <b-card-text class="card-text">
-                                Red pin
-                            </b-card-text>
-                        </b-card-body>
-                        <b-card-footer>
-                            <b-input-group>
-                                <b-input-group-append>
-                                    <b-button variant="outline-dark">READ</b-button>
-                                    <b-button variant="outline-dark">OUTPUT</b-button>
-                                </b-input-group-append>
-                            </b-input-group>
-                        </b-card-footer>
-                    </b-card>
                     
-                    <b-card no-body style="max-width: 20rem;">
+                    <b-card no-body style="max-width: 20rem;" v-for="pin in digital" v-bind:key="pin.id">
                         <b-card-body>
-                            <b-card-title>PIN 5</b-card-title>
-                            <b-card-sub-title class="mb-2">MODE INPUT</b-card-sub-title>
+                            <b-card-title>PIN {{pin.id}}</b-card-title>
+                            <b-card-sub-title class="mb-2">MODE {{ getMode(pin.mode) }}</b-card-sub-title>
                             <b-card-text class="card-text">
-                                Red pin
+                                {{ pin.desc }}
                             </b-card-text>
                         </b-card-body>
                         <b-card-footer>
@@ -61,9 +44,27 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
+    import { Pin } from "@/store/device/types";
 
-    @Component
-    export default class Digital extends Vue {}
+    @Component({
+        computed: {
+            device : function() {
+                return this.$store.getters.selectedDevice;
+            },
+            digital: function(){
+                return this.$store.getters.selectedDevice.pins.filter(
+                    (pin: Pin) => pin.type == "digital"
+                )
+            }
+        }
+    })
+    export default class Digital extends Vue {
+
+        getMode(mode: string){
+            return mode == "o" ? "OUTPUT" : "INPUT";
+        }
+
+    }
 </script>
 
 <style scoped>

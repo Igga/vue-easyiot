@@ -74,7 +74,7 @@
   margin: auto;
 }
 .loader--text:after {
-  content: "Загрузка";
+  content: "Loading";
   font-weight: bold;
   animation-name: loading-text;
   animation-duration: 3s;
@@ -97,16 +97,16 @@
 }
 @keyframes loading-text {
   0% {
-    content: "Загрузка";
+    content: "Loading";
   }
   25% {
-    content: "Загрузка.";
+    content: "Loading.";
   }
   50% {
-    content: "Загрузка..";
+    content: "Loading..";
   }
   75% {
-    content: "Загрузка...";
+    content: "Loading...";
   }
 }
 </style>

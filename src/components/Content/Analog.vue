@@ -15,27 +15,56 @@
                             </b-card-text>
                         </b-card-body>
                         <b-card-footer>
-                            <b-input-group>
+                            <b-input-group v-if="isInput(pin.mode)">
                                 <b-input-group-append>
                                     <div class="analog-div">
-                                        <b-form-input v-model="value" type="range" min="0" max="255"></b-form-input>
-                                        <span class="analog-range">{{ pin.state }}</span>
+                                        <vue-range-slider class="diy-tooltip" ref="slider" v-model="pin.state"
+                                            min="0" max="255" step="1" width="150px"
+                                            v-on:drag-end="changeState(pin.id, pin.state)"
+                                            :disabled="connected"
+                                        ></vue-range-slider>
                                     </div>
-                                    <b-button variant="outline-dark">OUTPUT</b-button>
+                                    <b-button variant="outline-dark"
+                                        @click="changeMode(pin.id, pin.mode)"
+                                        :disabled="connected"
+                                        >OUTPUT</b-button>
                                 </b-input-group-append>
                             </b-input-group>
+                            <b-button-group  v-if="!isInput(pin.mode)">
+                                <b-button variant="outline-dark"
+                                    @click="readPin(pin.id)"
+                                    :disabled="connected"
+                                    >READ</b-button>
+                                <b-button variant="outline-dark"
+                                    @click="changeMode(pin.id, pin.mode)"
+                                    :disabled="connected"
+                                    >INTPUT</b-button>
+                            </b-button-group>
                         </b-card-footer>
                     </b-card>
                     
                 </b-card-group>
 
                 <b-input-group class="mt-3">
+                    <b-form-input class="pin-id" type="number"
+                        placeholder="Enter PIN"
+                        v-model="pinId"
+                        :disabled="connected"
+                    ></b-form-input>
                     <b-form-input
-                        placeholder="Enter function name"
+                        placeholder="Enter description" type="search"
+                        v-model="desc"
+                        :disabled="connected"
                     ></b-form-input>
                     <b-input-group-append>
-                    <b-button variant="outline-success">ADD INPUT</b-button>
-                    <b-button variant="outline-success">ADD OUTPUT</b-button>
+                    <b-button variant="outline-success"
+                        @click="addPin(pinId, desc, 0)"
+                        :disabled="connected"
+                        >ADD INPUT</b-button>
+                    <b-button variant="outline-success"
+                        @click="addPin(pinId, desc, 1)"
+                        :disabled="connected"
+                        >ADD OUTPUT</b-button>
                     </b-input-group-append>
                 </b-input-group>
 
@@ -46,24 +75,55 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
-    import { Pin } from "@/store/device/types";
+    import { Pin, Device } from "@/store/device/types";
+
+    import 'vue-range-component/dist/vue-range-slider.css';
+    import VueRangeSlider from 'vue-range-component';
 
     @Component({
         computed: {
-            device: function(){
-                return this.$store.getters.selectedDevice;
+            connected(): boolean {
+                return !this.$store.getters.selectedDevice.connected;
             },
-            analog: function(){
+            analog(): Pin[] {
                 return this.$store.getters.selectedDevice.pins.filter(
                     (pin: Pin) => pin.type == "analog"
                 )
             }
+        },
+        components: {
+            VueRangeSlider
         }
     })
     export default class Analog extends Vue {
 
         getMode(mode: string){
             return mode == "o" ? "OUTPUT" : "INPUT";
+        }
+
+        isInput(mode: string) {
+            return mode == "i";
+        }
+
+        changeState(pinId: number, value: number) {
+            console.log(pinId + " : " + value);
+        }
+
+        changeMode(pinId: number, mode: string){
+            const device: Device = this.$store.getters.selectedDevice;
+            const newmode: string = mode == "o" ? "i" : "o";
+            
+            console.log(device.id + " : " + newmode);
+        }
+
+        readPin(pinId: number){
+            const device: Device = this.$store.getters.selectedDevice;
+            console.log(pinId);
+        }
+
+        addPin(pinId: number, desc: string, m: number){
+            const mode: string = m ? "i" : "o";
+            console.log(pinId + " : " + desc + " : " + mode);
         }
 
     }
@@ -94,14 +154,16 @@
         min-height: 80px !important;
     }
 
-    .analog-range {
-        margin-top: -15px;
-        display: flex;
-        justify-content: center;
+    .diy-tooltip {
+        margin-top: 9px;
     }
 
     .analog-div {
         margin-right: 10px;
+    }
+
+    .pin-id {
+        max-width: 150px;
     }
 
 </style>

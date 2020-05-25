@@ -36,10 +36,31 @@ export const actions: ActionTree<Devices, RootState> = {
                                 type: "digital"
                             },
                             {
-                                id: 1,
+                                id: 10,
                                 mode: "i",
+                                desc: "RED",
+                                state: 0,
+                                type: "digital"
+                            },
+                            {
+                                id: 11,
+                                mode: "i",
+                                desc: "RED",
+                                state: 1,
+                                type: "digital"
+                            },
+                            {
+                                id: 1,
+                                mode: "o",
                                 desc: "GREEN",
-                                state: 20,
+                                state: 200,
+                                type: "analog"
+                            },
+                            {
+                                id: 2,
+                                mode: "i",
+                                desc: "BLUE",
+                                state: 30,
                                 type: "analog"
                             }
                         ],

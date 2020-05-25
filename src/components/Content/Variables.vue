@@ -16,17 +16,23 @@
                         </b-tr>
                     </b-thead>
                     <b-tbody>
-                        <b-tr v-for="(variable, index) in device.variables" v-bind:key="index">
+                        <b-tr v-for="(variable, index) in variables" v-bind:key="index">
                             <b-td>{{ index + 1 }}</b-td>
                             <b-td>{{ variable.name }}</b-td>
                             <b-td>{{ variable.lastResponse }}</b-td>
                             <b-td>{{ calcDate(variable.responseTime) }}</b-td>
                             <b-td>
                                 <b-button-group>
-                                    <b-button variant="outline-success" size="sm">
+                                    <b-button variant="outline-success" size="sm"
+                                        @click="readVar(variable.name)"
+                                        :disabled="connected"
+                                    >
                                         Read
                                     </b-button>
-                                    <b-button variant="outline-danger" size="sm">
+                                    <b-button variant="outline-danger" size="sm"
+                                        @click="deleteVar(variable.name)"
+                                        :disabled="connected"
+                                    >
                                         Delete
                                     </b-button>
                                 </b-button-group>
@@ -35,11 +41,16 @@
                     </b-tbody>
                 </b-table-simple>    
                 <b-input-group>
-                    <b-form-input
+                    <b-form-input type="search"
+                        v-model="name"
                         placeholder="Enter variable name"
+                        :disabled="connected"
                     ></b-form-input>
                     <b-input-group-append>
-                    <b-button variant="outline-success">ADD</b-button>
+                    <b-button variant="outline-success"
+                        @click="addVar(name)"
+                        :disabled="connected"
+                    >ADD</b-button>
                     </b-input-group-append>
                 </b-input-group>
 
@@ -50,11 +61,15 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
+    import { Variable, Device } from "@/store/device/types";
 
     @Component({
         computed: {
-            device: function() {
-                return this.$store.getters.selectedDevice;
+            connected(): boolean {
+                return !this.$store.getters.selectedDevice.connected;
+            },
+            variables(): Variables[] {
+                return this.$store.getters.selectedDevice.variables;
             }
         }
     })
@@ -62,6 +77,19 @@
 
         calcDate(date: Date): string {
             return new Date(date).toISOString().replace(/T/, ' ').replace(/\..+/, '')
+        }
+
+        readVar(name: string){
+            const device: Device = this.$store.getters.selectedDevice;
+
+        }
+
+        deleteVar(name: string){
+            const device: Device = this.$store.getters.selectedDevice;
+        }
+
+        addVar(name: string){
+            const device: Device = this.$store.getters.selectedDevice;
         }
 
     }

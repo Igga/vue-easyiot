@@ -4,5 +4,6 @@ import { RootState } from '../types';
 
 export const getters: GetterTree<Devices, RootState> = {
     devices: (state: Devices) => state.devices,
-    selectedDevice: (state: Devices) => state.devices[state.selected]
+    selectedDevice: (state: Devices) => state.devices[state.selected],
+    disabled: (state: Devices) => state.disabled
 }

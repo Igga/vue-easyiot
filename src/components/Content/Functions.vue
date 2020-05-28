@@ -9,16 +9,16 @@
                 <b-input-group v-for="(name, index) in device.functions" v-bind:key="index" :prepend="name" class="mt-3">
                     <b-form-input placeholder="Param" type="search"
                         v-model="param"
-                        :disabled="connected"
+                        :disabled="disabled"
                     ></b-form-input>
                     <b-input-group-append>
                     <b-button variant="outline-success"
                         @click="readFunc(name, param)"
-                        :disabled="connected"
+                        :disabled="disabled"
                     >Send</b-button>
                     <b-button variant="outline-danger"
                         @click="deleteFunc(name)"
-                        :disabled="connected"
+                        :disabled="disabled"
                     >Delete</b-button>
                     </b-input-group-append>
                 </b-input-group>
@@ -28,12 +28,13 @@
                         placeholder="Enter function name"
                         type="search"
                         v-model="name"
-                        :disabled="connected"
+                        :disabled="disabled"
+                        @keydown.space.prevent
                     ></b-form-input>
                     <b-input-group-append>
                     <b-button variant="outline-success"
                         @click="addFunc(name)"
-                        :disabled="connected"
+                        :disabled="disabled"
                     >ADD</b-button>
                     </b-input-group-append>
                 </b-input-group>
@@ -45,33 +46,38 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
-    import { Function, Device } from "@/store/device/types";
+    import { Function, Device, DEVICE_REQUEST } from "@/store/device/types";
 
     @Component({
         computed: {
-            connected(): boolean {
-                return !this.$store.getters.selectedDevice.connected;
+            disabled(): boolean {
+                return (this.$store.getters.disabled ||
+                    !this.$store.getters.selectedDevice.connected);
             },
-            device: function() {
+            device(): Device {
                 return this.$store.getters.selectedDevice;
             }
         }
     })
     export default class Functions extends Vue {
 
-        readFunc(name: Function, param: string){
-            const device: Device = this.$store.getters.selectedDevice;
+        private name = "";
 
+        readFunc(name: Function, param = "none"){
+            const device: Device = this.$store.getters.selectedDevice;
+            this.$store.dispatch(DEVICE_REQUEST, `/api/functions/call/${device.id}/${name}/${param}`);
         }
 
         deleteFunc(name: Function){
             const device: Device = this.$store.getters.selectedDevice;
-
+            this.$store.dispatch(DEVICE_REQUEST, `/api/functions/delete/${device.id}/${name}`);
         }
 
         addFunc(name: string){
+            if(!name)
+                return;
             const device: Device = this.$store.getters.selectedDevice;
-
+            this.$store.dispatch(DEVICE_REQUEST, `/api/functions/create/${device.id}/${name}`);
         }
 
     }

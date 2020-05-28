@@ -55,7 +55,7 @@
 
     @Component({
         computed: {
-            device: function() {
+            device(): Device {
                 return this.$store.getters.selectedDevice;
             }
         }

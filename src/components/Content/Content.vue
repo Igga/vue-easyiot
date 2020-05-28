@@ -1,19 +1,27 @@
 <template>
     <div role="tablist" class="content">
         
-        <MainInfo />
+        <div v-if="!isDevice">
+            Create your first device with "My Devices"
+        </div>
 
-        <Digital />
-
-        <Analog />
-
-        <Variables />
+        <div v-if="isDevice">
         
-        <Functions />
+            <MainInfo />
 
-        <Sheduler />
+            <Digital />
 
-        <Programming />
+            <Analog />
+
+            <Variables />
+            
+            <Functions />
+            <!--
+            <Sheduler />
+
+            <Programming />
+            -->
+        </div>
 
     </div>
 </template>
@@ -29,6 +37,11 @@
     import Programming from "@/components/Content/Programming.vue";
 
     @Component({
+        computed: {
+            isDevice(): boolean {
+                return !!this.$store.getters.selectedDevice;
+            }
+        },
         components: {
             MainInfo,
             Variables,

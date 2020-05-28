@@ -8,6 +8,9 @@
                 <b-card-group deck>
                     <b-card no-body style="max-width: 20rem;" v-for="pin in analog" v-bind:key="pin.id">
                         <b-card-body>
+                            <div class="delete-card"
+                                @click="deletePin(pin.id)"
+                            ></div>
                             <b-card-title>PIN {{ pin.id }}</b-card-title>
                             <b-card-sub-title class="mb-2">MODE {{ getMode(pin.mode) }}</b-card-sub-title>
                             <b-card-text class="card-text">
@@ -21,24 +24,24 @@
                                         <vue-range-slider class="diy-tooltip" ref="slider" v-model="pin.state"
                                             min="0" max="255" step="1" width="150px"
                                             v-on:drag-end="changeState(pin.id, pin.state)"
-                                            :disabled="connected"
+                                            :disabled="disabled"
                                         ></vue-range-slider>
                                     </div>
                                     <b-button variant="outline-dark"
                                         @click="changeMode(pin.id, pin.mode)"
-                                        :disabled="connected"
+                                        :disabled="disabled"
                                         >OUTPUT</b-button>
                                 </b-input-group-append>
                             </b-input-group>
                             <b-button-group  v-if="!isInput(pin.mode)">
                                 <b-button variant="outline-dark"
                                     @click="readPin(pin.id)"
-                                    :disabled="connected"
+                                    :disabled="disabled"
                                     >READ</b-button>
                                 <b-button variant="outline-dark"
                                     @click="changeMode(pin.id, pin.mode)"
-                                    :disabled="connected"
-                                    >INTPUT</b-button>
+                                    :disabled="disabled"
+                                    >INPUT</b-button>
                             </b-button-group>
                         </b-card-footer>
                     </b-card>
@@ -49,21 +52,21 @@
                     <b-form-input class="pin-id" type="number"
                         placeholder="Enter PIN"
                         v-model="pinId"
-                        :disabled="connected"
+                        :disabled="disabled"
                     ></b-form-input>
                     <b-form-input
                         placeholder="Enter description" type="search"
                         v-model="desc"
-                        :disabled="connected"
+                        :disabled="disabled"
                     ></b-form-input>
                     <b-input-group-append>
                     <b-button variant="outline-success"
                         @click="addPin(pinId, desc, 0)"
-                        :disabled="connected"
+                        :disabled="disabled"
                         >ADD INPUT</b-button>
                     <b-button variant="outline-success"
                         @click="addPin(pinId, desc, 1)"
-                        :disabled="connected"
+                        :disabled="disabled"
                         >ADD OUTPUT</b-button>
                     </b-input-group-append>
                 </b-input-group>
@@ -75,15 +78,16 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
-    import { Pin, Device } from "@/store/device/types";
+    import { Pin, Device, DEVICE_REQUEST } from "@/store/device/types";
 
     import 'vue-range-component/dist/vue-range-slider.css';
     import VueRangeSlider from 'vue-range-component';
 
     @Component({
         computed: {
-            connected(): boolean {
-                return !this.$store.getters.selectedDevice.connected;
+            disabled(): boolean {
+                return (this.$store.getters.disabled ||
+                    !this.$store.getters.selectedDevice.connected);
             },
             analog(): Pin[] {
                 return this.$store.getters.selectedDevice.pins.filter(
@@ -97,6 +101,9 @@
     })
     export default class Analog extends Vue {
 
+        private pinId = "";
+        private desc = "";
+
         getMode(mode: string){
             return mode == "o" ? "OUTPUT" : "INPUT";
         }
@@ -105,25 +112,33 @@
             return mode == "i";
         }
 
-        changeState(pinId: number, value: number) {
-            console.log(pinId + " : " + value);
+        changeState(pinId: number, state: number) {
+            const device: Device = this.$store.getters.selectedDevice;
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/set/${device.id}/${pinId}/${state}`);
         }
 
         changeMode(pinId: number, mode: string){
             const device: Device = this.$store.getters.selectedDevice;
             const newmode: string = mode == "o" ? "i" : "o";
-            
-            console.log(device.id + " : " + newmode);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/mode/${device.id}/${pinId}/${newmode}`);
         }
 
         readPin(pinId: number){
             const device: Device = this.$store.getters.selectedDevice;
-            console.log(pinId);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/get/${device.id}/${pinId}`);
         }
 
         addPin(pinId: number, desc: string, m: number){
-            const mode: string = m ? "i" : "o";
-            console.log(pinId + " : " + desc + " : " + mode);
+            if(!pinId)
+                return;
+            const mode: string = m ? "o" : "i";
+            const device: Device = this.$store.getters.selectedDevice;
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/create/${device.id}/${pinId}/analog/${mode}/${desc}`);
+        }
+
+        deletePin(pinId: number) {
+            const device: Device = this.$store.getters.selectedDevice;
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/delete/${device.id}/${pinId}`);
         }
 
     }
@@ -164,6 +179,33 @@
 
     .pin-id {
         max-width: 150px;
+    }
+
+    .delete-card {
+        position: absolute;
+        right: 7px;
+        top: 12px;
+        width: 32px;
+        height: 32px;
+        opacity: 0.3;
+    }
+    .delete-card:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    .delete-card:before, .delete-card:after {
+        position: absolute;
+        left: 15px;
+        content: ' ';
+        height: 20px;
+        width: 2px;
+        background-color: #333;
+    }
+    .delete-card:before {
+        transform: rotate(45deg);
+    }
+    .delete-card:after {
+        transform: rotate(-45deg);
     }
 
 </style>

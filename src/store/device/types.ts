@@ -1,7 +1,7 @@
-export const DEVICE_REQUEST = "DEVICE_REQUEST";
-export const DEVICE_SUCCESS = "DEVICE_SUCCESS";
-export const DEVICE_ERROR   = "DEVICE_ERROR";
-export const DEVICE_SELECT  = "DEVICE_SELECT";
+export const DEVICE_REQUEST  = "DEVICE_REQUEST";
+export const DEVICE_SUCCESS  = "DEVICE_SUCCESS";
+export const DEVICE_ERROR    = "DEVICE_ERROR";
+export const DEVICE_SELECT   = "DEVICE_SELECT";
 
 export type Function = string;
 
@@ -32,11 +32,14 @@ export interface Device {
 
 export interface DeviceResp {
     devices: Device[],
-    success: boolean
+    success: boolean,
+    message?: string
 }
 
 export interface Devices {
     devices: Device[],
     selected: number,
-    status: string
+    disabled: boolean,
+    status: string,
+    message: string
 }

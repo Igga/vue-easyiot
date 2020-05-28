@@ -29,6 +29,7 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
+    import { DEVICE_REQUEST } from "@/store/device/types";
 
     @Component
     export default class NewDevice extends Vue {
@@ -55,9 +56,8 @@
             if (!this.checkFormValidity())
                 return;
 
-            /*
-                TO DO: SAVE this.name;
-            */
+            this.$store.dispatch(DEVICE_REQUEST, `/api/devices/create/${this.name}`);
+
             this.$nextTick(() => {
                 this.$bvModal.hide('modal-new')
             });

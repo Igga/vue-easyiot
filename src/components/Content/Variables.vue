@@ -5,7 +5,7 @@
         </b-card-header>
         <b-collapse id="accordion-4" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
-                <b-table-simple striped bordered hover>
+                <b-table-simple striped bordered hover v-if="variables.length">
                     <b-thead>
                         <b-tr>
                             <b-th>#</b-th>
@@ -25,13 +25,13 @@
                                 <b-button-group>
                                     <b-button variant="outline-success" size="sm"
                                         @click="readVar(variable.name)"
-                                        :disabled="connected"
+                                        :disabled="disabled"
                                     >
                                         Read
                                     </b-button>
                                     <b-button variant="outline-danger" size="sm"
                                         @click="deleteVar(variable.name)"
-                                        :disabled="connected"
+                                        :disabled="disabled"
                                     >
                                         Delete
                                     </b-button>
@@ -44,12 +44,12 @@
                     <b-form-input type="search"
                         v-model="name"
                         placeholder="Enter variable name"
-                        :disabled="connected"
+                        :disabled="disabled"
                     ></b-form-input>
                     <b-input-group-append>
                     <b-button variant="outline-success"
                         @click="addVar(name)"
-                        :disabled="connected"
+                        :disabled="disabled"
                     >ADD</b-button>
                     </b-input-group-append>
                 </b-input-group>
@@ -61,12 +61,13 @@
 
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
-    import { Variable, Device } from "@/store/device/types";
+    import { Variable, Device, DEVICE_REQUEST } from "@/store/device/types";
 
     @Component({
         computed: {
-            connected(): boolean {
-                return !this.$store.getters.selectedDevice.connected;
+            disabled(): boolean {
+                return (this.$store.getters.disabled ||
+                    !this.$store.getters.selectedDevice.connected);
             },
             variables(): Variables[] {
                 return this.$store.getters.selectedDevice.variables;
@@ -75,21 +76,25 @@
     })
     export default class Variables extends Vue {
 
+        private name = "";
+
         calcDate(date: Date): string {
             return new Date(date).toISOString().replace(/T/, ' ').replace(/\..+/, '')
         }
 
         readVar(name: string){
             const device: Device = this.$store.getters.selectedDevice;
-
+            this.$store.dispatch(DEVICE_REQUEST, `/api/variables/get/${device.id}/${name}`);
         }
 
         deleteVar(name: string){
             const device: Device = this.$store.getters.selectedDevice;
+            this.$store.dispatch(DEVICE_REQUEST, `/api/variables/delete/${device.id}/${name}`);
         }
 
         addVar(name: string){
             const device: Device = this.$store.getters.selectedDevice;
+            this.$store.dispatch(DEVICE_REQUEST, `/api/variables/create/${device.id}/${name}`);
         }
 
     }

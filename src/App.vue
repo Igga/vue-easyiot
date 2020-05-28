@@ -16,9 +16,9 @@ import { DEVICE_REQUEST } from './store/device/types';
 
 @Component({
     created: function () {
-        this.$store.dispatch(DEVICE_REQUEST).then(() => {
+        this.$store.dispatch(DEVICE_REQUEST, '/api/devices/get').then(() => {
             (this as any).loading  = false;
-        })
+        });
     },
     components: {
         Header,

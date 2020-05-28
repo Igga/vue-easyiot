@@ -1,6 +1,6 @@
 <template>
     <b-navbar-nav class="ml-center">
-        <b-nav-item-dropdown text="My Devices" center>
+        <b-nav-item-dropdown text="My Devices" center :disabled="disabled">
             <NewDevice />
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item v-for="(device, index) in devices" v-bind:key="device.id" @click="selectDevice(index)">{{ device.name }}</b-dropdown-item>
@@ -15,9 +15,12 @@
 
     @Component({
         computed: {
-            devices: function() {
+            devices(): Device[] {
                 return this.$store.getters.devices;
-            }
+            },
+            disabled(): boolean {
+                return this.$store.getters.disabled;
+            } 
         },
         components: {
             NewDevice

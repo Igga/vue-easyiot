@@ -102,17 +102,38 @@
         changeMode(pinId: number, mode: string){
             const device: Device = this.$store.getters.selectedDevice;
             const newmode: string = mode == "o" ? "i" : "o";
-            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/mode/${device.id}/${pinId}/${newmode}`);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/mode/${device.id}/${pinId}/${newmode}`)
+            .then(() => {
+                this.$bvToast.toast(this.$store.getters.selectedDevice.message, {
+                    title: "Notification",
+                    autoHideDelay: 5000,
+                    appendToast: true
+                });
+            });
         }
 
         changeState(pinId: number, state: number){
             const device: Device = this.$store.getters.selectedDevice;
-            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/set/${device.id}/${pinId}/${state}`);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/set/${device.id}/${pinId}/${state}`)
+            .then(() => {
+                this.$bvToast.toast(this.$store.getters.selectedDevice.message, {
+                    title: "Notification",
+                    autoHideDelay: 5000,
+                    appendToast: true
+                });
+            });
         }
 
         readPin(pinId: number){
             const device: Device = this.$store.getters.selectedDevice;
-            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/get/${device.id}/${pinId}`);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/get/${device.id}/${pinId}`)
+            .then(() => {
+                this.$bvToast.toast(this.$store.getters.selectedDevice.message, {
+                    title: "Notification",
+                    autoHideDelay: 5000,
+                    appendToast: true
+                });
+            });
         }
 
         addPin(pinId: number, desc: string, m: number){
@@ -120,7 +141,14 @@
                 return;
             const mode: string = m ? "o" : "i";
             const device: Device = this.$store.getters.selectedDevice;
-            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/create/${device.id}/${pinId}/digital/${mode}/${desc}`);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/pins/create/${device.id}/${pinId}/digital/${mode}/${desc}`)
+            .then(() => {
+                this.$bvToast.toast(this.$store.getters.selectedDevice.message, {
+                    title: "Notification",
+                    autoHideDelay: 5000,
+                    appendToast: true
+                });
+            });
         }
 
         deletePin(pinId: number) {

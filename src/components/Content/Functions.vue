@@ -62,10 +62,20 @@
     export default class Functions extends Vue {
 
         private name = "";
+        private param = "";
 
-        readFunc(name: Function, param = "none"){
+        readFunc(name: Function, param: string){
+            if(!param.length)
+                param = "none";
             const device: Device = this.$store.getters.selectedDevice;
-            this.$store.dispatch(DEVICE_REQUEST, `/api/functions/call/${device.id}/${name}/${param}`);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/functions/call/${device.id}/${name}/${param}`)
+            .then(() => {
+                this.$bvToast.toast(this.$store.getters.selectedDevice.message, {
+                    title: "Notification",
+                    autoHideDelay: 5000,
+                    appendToast: true
+                });
+            });
         }
 
         deleteFunc(name: Function){

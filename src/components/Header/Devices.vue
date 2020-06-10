@@ -1,5 +1,5 @@
 <template>
-    <b-navbar-nav class="ml-center">
+    <b-navbar-nav class="ml-center cent">
         <b-nav-item-dropdown text="My Devices" center :disabled="disabled">
             <NewDevice />
             <b-dropdown-divider></b-dropdown-divider>
@@ -32,3 +32,13 @@
         }
     }
 </script>
+
+<style scoped>
+
+    .cent {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+</style>

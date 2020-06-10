@@ -16,9 +16,11 @@
             <Variables />
             
             <Functions />
+
+            <Events />
             <!--
             <Sheduler />
-
+            
             <Programming />
             -->
         </div>
@@ -33,6 +35,7 @@
     import Functions from "@/components/Content/Functions.vue";
     import Digital from "@/components/Content/Digital.vue";
     import Analog from "@/components/Content/Analog.vue";
+    import Events from "@/components/Content/Events.vue";
     import Sheduler from "@/components/Content/Sheduler.vue";
     import Programming from "@/components/Content/Programming.vue";
 
@@ -48,6 +51,7 @@
             Functions,
             Digital,
             Analog,
+            Events,
             Sheduler,
             Programming
         }

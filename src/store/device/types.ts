@@ -19,6 +19,12 @@ export interface Variable {
     responseTime: Date
 }
 
+export interface Event {
+    name: string,
+    data: string,
+    time: Date
+}
+
 export interface Device {
     id: string,
     name: string,
@@ -27,7 +33,8 @@ export interface Device {
     lastOnline: Date,
     pins: Pin[],
     variables: Variable[],
-    functions: Function[]
+    functions: Function[],
+    events: Event[]
 }
 
 export interface DeviceResp {
@@ -40,6 +47,5 @@ export interface Devices {
     devices: Device[],
     selected: number,
     disabled: boolean,
-    status: string,
-    message: string
+    status: string
 }

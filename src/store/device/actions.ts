@@ -10,11 +10,8 @@ import { Devices,
          DEVICE_SELECT } from './types';
          
 export const actions: ActionTree<Devices, RootState> = {
-    [DEVICE_SELECT]: ({ commit }, selected: number): Promise<number> => {
-        return new Promise<number>(resolve => {
-            commit(DEVICE_SELECT, selected);
-            resolve(1);
-        })
+    [DEVICE_SELECT]: ({ commit }, selected: number): void => {
+        commit(DEVICE_SELECT, selected);
     },
     [DEVICE_REQUEST]: ({ commit }, url: string): Promise<number> => {
         return new Promise<number>((resolve, reject) => {
@@ -29,12 +26,13 @@ export const actions: ActionTree<Devices, RootState> = {
                 if(process.env.NODE_ENV === 'development')
                     console.log(payload);
                 
-                if(payload.success)
+                if(payload.success) {
                     commit(DEVICE_SUCCESS, payload);
-                else
-                    commit(DEVICE_ERROR, payload.message);
-
-                resolve(1);
+                    resolve(1);
+                    return;
+                }
+                commit(DEVICE_ERROR, payload.message);
+                reject(0);
             }).catch(err => {
                 commit(DEVICE_ERROR, err);
                 reject(0);

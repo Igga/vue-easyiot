@@ -4,6 +4,5 @@ export const state: Devices = {
     devices: [],
     selected: 0,
     disabled: false,
-    status: "init",
-    message: ""
+    status: "init"
 }

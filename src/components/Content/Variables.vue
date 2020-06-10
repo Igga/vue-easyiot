@@ -69,7 +69,7 @@
                 return (this.$store.getters.disabled ||
                     !this.$store.getters.selectedDevice.connected);
             },
-            variables(): Variables[] {
+            variables(): Variable[] {
                 return this.$store.getters.selectedDevice.variables;
             }
         }
@@ -84,7 +84,14 @@
 
         readVar(name: string){
             const device: Device = this.$store.getters.selectedDevice;
-            this.$store.dispatch(DEVICE_REQUEST, `/api/variables/get/${device.id}/${name}`);
+            this.$store.dispatch(DEVICE_REQUEST, `/api/variables/get/${device.id}/${name}`)
+            .then(() => {
+                this.$bvToast.toast(this.$store.getters.selectedDevice.message, {
+                    title: "Notification",
+                    autoHideDelay: 5000,
+                    appendToast: true
+                });
+            });
         }
 
         deleteVar(name: string){

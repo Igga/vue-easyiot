@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { MutationTree } from 'vuex';
 import { Devices,
          DeviceResp,
@@ -18,7 +19,12 @@ export const mutations: MutationTree<Devices> = {
     },
     [DEVICE_ERROR]: (state: Devices, err: string) => {
         state.status = "error";
-        state.message = err;
+        const vm = new Vue();
+        vm.$bvToast.toast(err, {
+            title: "Error",
+            autoHideDelay: 5000,
+            appendToast: true
+        });
         state.disabled = false;
     },
     [DEVICE_SELECT]: (state: Devices, selected: number) => {

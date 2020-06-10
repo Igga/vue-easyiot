@@ -2,7 +2,7 @@
     <b-navbar expand="lg" type="dark" variant="dark" fixed="top" class="nav-content">
         <b-navbar-brand class="logo">Easy-IoT</b-navbar-brand>
         <Devices />
-        <b-button variant="outline-light">Logout</b-button>
+        <!--<b-button variant="outline-light">Logout</b-button>-->
     </b-navbar>
 </template>
 
@@ -19,9 +19,6 @@
 </script>
 
 <style scoped>
-    .nav-content {
-        justify-content: space-between !important;
-    }
 
     .logo {
         font-family: monospace !important;

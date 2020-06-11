@@ -8,12 +8,12 @@
 
                 <b-input-group v-for="(name, index) in device.functions" v-bind:key="index" :prepend="name" class="mt-3">
                     <b-form-input placeholder="Param" type="search"
-                        v-model="param"
+                        v-model="params[index]"
                         :disabled="disabled"
                     ></b-form-input>
                     <b-input-group-append>
                     <b-button variant="outline-success"
-                        @click="readFunc(name, param)"
+                        @click="readFunc(name, params[index])"
                         :disabled="disabled"
                     >Send</b-button>
                     <b-button variant="outline-danger"
@@ -62,7 +62,7 @@
     export default class Functions extends Vue {
 
         private name = "";
-        private param = "";
+        private params = [];
 
         readFunc(name: Function, param: string){
             if(!param.length)

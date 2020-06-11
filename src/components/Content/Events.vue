@@ -5,6 +5,15 @@
         </b-card-header>
         <b-collapse id="accordion-6" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
+                
+                <b-form-select class="mb-3" v-model="selected" :options="calcOptions(events)"></b-form-select>
+
+                <Chart class="small"
+                    v-if="selected"
+                    :chartData="calcData(selected, events)"
+                    :options="{responsive: true, maintainAspectRatio: false, fill: false}"
+                />
+
                 <b-table-simple striped bordered hover v-if="events.length">
                     <b-thead>
                         <b-tr>
@@ -28,7 +37,7 @@
                     @click="refreshEvents()"
                     :disabled="disabled"
                 >REFRESH</b-button>
-
+                    
             </b-card-body>
         </b-collapse>
     </b-card>
@@ -37,8 +46,13 @@
 <script lang="ts">
     import { Component, Vue } from "vue-property-decorator";
     import { Event, Device, DEVICE_REQUEST } from "@/store/device/types";
+    
+    import Chart from "./Chart.vue";
 
     @Component({
+        components: {
+            Chart
+        },
         computed: {
             disabled(): boolean {
                 return (this.$store.getters.disabled ||
@@ -50,6 +64,49 @@
         }
     })
     export default class Events extends Vue {
+
+        selected = null;
+
+
+        calcData(selected: string, events: Event[]) {
+            if(!selected)
+                return;
+            
+            const labels: string[] = [];
+            const data: string[] = [];
+
+            events.forEach((evt: Event) => {
+                if(evt.name == selected) {
+                    labels.push(this.calcDate(evt.time));
+                    data.push(evt.data);
+                }
+            });
+
+            return {
+                labels: labels.reverse(),
+                datasets: [{
+                    label: selected.toUpperCase(),
+                    data: data.reverse(),
+                    fill: false,
+                    backgroundColor: '#e7eaeb',
+                    borderColor: '#3690eb'
+                }]
+            };
+        }
+
+        calcOptions(events: Event[]):any {
+            const set = new Set<string>();
+            const options: any[] = [];
+
+            events.forEach((evt: Event) =>  set.add(evt.name) );
+            for (const name of set)
+                options.push({
+                    value: name,
+                    text: name
+                });
+
+            return options;
+        }
 
         calcDate(date: Date): string {
             return new Date(date).toISOString().replace(/T/, ' ').replace(/\..+/, '')
@@ -81,6 +138,12 @@
         color: #007bff;
         text-decoration: none;
         padding: 20px;
+    }
+
+    .small {
+        height: 250px;
+        margin:  0px auto 50px;
+        position: 'relative';
     }
 
 </style>
